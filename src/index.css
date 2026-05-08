@@ -171,6 +171,12 @@ input {
   color: var(--page-text);
 }
 
+.typing-copy {
+  font-size: 1.125rem;
+  line-height: 2rem;
+  letter-spacing: 0;
+}
+
 .workspace-card {
   overflow: hidden;
 }
@@ -183,6 +189,54 @@ input {
 
 .primary-button:hover {
   filter: brightness(1.03);
+}
+
+.time-warning-card {
+  box-shadow:
+    0 0 0 1px rgba(245, 158, 11, 0.35),
+    0 0 18px rgba(245, 158, 11, 0.28);
+}
+
+:root[data-theme='dark'] .time-warning-card,
+.dark .time-warning-card {
+  box-shadow:
+    0 0 0 1px rgba(251, 191, 36, 0.42),
+    0 0 22px rgba(251, 191, 36, 0.32);
+}
+
+.current-character {
+  display: inline-block;
+  min-width: 0.62ch;
+  padding-inline: 0.08rem;
+  border-radius: 0.2rem;
+  background: rgba(251, 191, 36, 0.7);
+  color: #000000;
+  font-weight: 700;
+  box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.45);
+}
+
+:root[data-theme='dark'] .current-character,
+.dark .current-character {
+  background: rgba(251, 191, 36, 0.85);
+  color: #ffffff;
+}
+
+.pending-character {
+  color: #000000;
+}
+
+:root[data-theme='dark'] .pending-character,
+.dark .pending-character {
+  color: #ffffff;
+}
+
+.typing-textarea {
+  color: #000000;
+}
+
+:root[data-theme='dark'] .typing-textarea,
+.dark .typing-textarea {
+  color: #ffffff;
 }
 
 .footer-credit {

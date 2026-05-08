@@ -13,14 +13,14 @@ export const PassageDisplay = memo(function PassageDisplay({
       title="Reference Passage"
       description={title ? `Currently loaded: ${title}` : 'Your custom practice passage'}
     >
-      <div className="workspace-panel flex-1 overflow-y-auto rounded-3xl border bg-slate-50 p-5 text-left text-lg leading-8 dark:border-white/10 dark:bg-white/5">
+      <div className="workspace-panel typing-copy flex-1 overflow-y-auto rounded-3xl border bg-slate-50 p-5 text-left dark:border-white/10 dark:bg-white/5">
         {characters.length > 0 ? (
           <>
             {characters.map((character) => {
               const styles = {
-                pending: 'text-slate-400 dark:text-slate-500',
+                pending: 'pending-character',
                 current:
-                  'rounded bg-amber-300/60 text-slate-950 shadow-[0_0_0_1px_rgba(245,158,11,0.35)] dark:bg-amber-400/70',
+                  'current-character',
                 correct: 'text-emerald-600 dark:text-emerald-400',
                 incorrect: 'rounded bg-rose-500/15 text-rose-600 dark:text-rose-300',
               }

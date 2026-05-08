@@ -8,15 +8,18 @@ export const StatsGrid = memo(function StatsGrid({
   totalTypedCharacters,
   errorsCount,
   timeLeft,
+  timeLimit,
   completionPercentage,
 }) {
+  const isLowTime = timeLeft > 0 && timeLeft <= Math.max(1, Math.ceil(timeLimit * 0.1))
+
   return (
     <div className="grid gap-1.5 sm:grid-cols-3 lg:grid-cols-6">
       <StatCard label="WPM" value={wpm} tone="accent" />
       <StatCard label="Accuracy" value={`${accuracy}%`} tone="success" />
       <StatCard label="Characters" value={totalTypedCharacters} />
       <StatCard label="Errors" value={errorsCount} tone="danger" />
-      <StatCard label="Time Left" value={formatTime(timeLeft)} />
+      <StatCard label="Time Left" value={formatTime(timeLeft)} tone={isLowTime ? 'warning' : 'default'} emphasized={isLowTime} />
       <StatCard label="Completion" value={`${completionPercentage}%`} />
     </div>
   )

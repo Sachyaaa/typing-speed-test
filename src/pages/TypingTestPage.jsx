@@ -134,12 +134,13 @@ export function TypingTestPage() {
             <SectionCard className="metrics-shell">
               <StatsGrid
                 wpm={comparison.wpm}
-                accuracy={comparison.accuracy}
-                totalTypedCharacters={comparison.totalTypedCharacters}
-                errorsCount={comparison.errorsCount}
-                timeLeft={timeLeft}
-                completionPercentage={comparison.completionPercentage}
-              />
+              accuracy={comparison.accuracy}
+              totalTypedCharacters={comparison.totalTypedCharacters}
+              errorsCount={comparison.errorsCount}
+              timeLeft={timeLeft}
+              timeLimit={timeLimit}
+              completionPercentage={comparison.completionPercentage}
+            />
               <div className="metrics-progress">
                 <ProgressBar percentage={comparison.completionPercentage} />
               </div>
