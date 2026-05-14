@@ -37,19 +37,18 @@ export const PassageSelector = memo(function PassageSelector({
                 type="button"
                 onClick={() => onModeChange(option.id)}
                 disabled={disabled}
-                className={`rounded-[14px] px-4 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60 ${
-                  isActive
-                    ? 'shadow-sm'
-                    : ''
+                className={`rounded-[14px] px-4 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
+                  isActive ? 'shadow-sm' : ''
                 }`}
                 style={
                   isActive
                     ? {
-                        background: 'var(--page-heading)',
-                        color: '#ffffff',
+                        background: 'var(--button-bg)',
+                        color: 'var(--button-text)',
                       }
                     : {
-                        color: 'var(--page-heading)',
+                        background: 'transparent',
+                        color: '#1e293b',
                       }
                 }
               >
@@ -109,8 +108,8 @@ export const PassageSelector = memo(function PassageSelector({
                 disabled={disabled || !customPassage.trim()}
                 className="rounded-full px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50"
                 style={{
-                  background: 'var(--page-heading)',
-                  color: '#ffffff',
+                  background: 'var(--button-bg)',
+                  color: 'var(--button-text)',
                 }}
               >
                 Save Passage

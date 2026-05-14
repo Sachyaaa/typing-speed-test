@@ -1,11 +1,11 @@
-export function calculateWpm(totalTypedCharacters, elapsedSeconds) {
+export function calculateWpm(correctCharacters, elapsedSeconds) {
   const minutes = elapsedSeconds / 60
 
-  if (minutes <= 0 || totalTypedCharacters <= 0) {
+  if (minutes <= 0 || correctCharacters <= 0) {
     return 0
   }
 
-  return Math.round(totalTypedCharacters / 5 / minutes)
+  return Math.round(correctCharacters / 5 / minutes)
 }
 
 export function calculateAccuracy(correctCharacters, totalTypedCharacters) {

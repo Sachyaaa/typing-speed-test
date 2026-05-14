@@ -1,4 +1,5 @@
 import { memo } from 'react'
+import { playErrorSound } from '../utils/sound'
 import { SectionCard } from './SectionCard'
 
 export const TypingArea = memo(function TypingArea({
@@ -19,14 +20,28 @@ export const TypingArea = memo(function TypingArea({
     <SectionCard
       className={className}
       title="Typing Area"
-      description="Type naturally, fix mistakes with backspace, and use Escape to restart the session."
+      description={
+        status === 'running'
+          ? 'Backspace and Delete are disabled during the test. Use Escape to restart.'
+          : 'Type naturally and use Escape to restart the session.'
+      }
     >
       <div className="flex h-full flex-1 flex-col gap-3">
         <textarea
           ref={textareaRef}
           value={value}
           onChange={(event) => onChange(event.target.value)}
-          onPaste={onPasteAttempt}
+          onPaste={(event) => {
+            event.preventDefault()
+            playErrorSound()
+            onPasteAttempt(event)
+          }}
+          onKeyDown={(event) => {
+            if (status === 'running' && (event.key === 'Backspace' || event.key === 'Delete')) {
+              event.preventDefault()
+              playErrorSound()
+            }
+          }}
           disabled={disabled}
           rows={8}
           spellCheck={false}

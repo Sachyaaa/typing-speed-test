@@ -52,7 +52,7 @@ export function compareText(sourceText, typedText, elapsedSeconds) {
     incorrectCharacters,
     errorsCount: incorrectCharacters,
     completionPercentage: Number(completionPercentage.toFixed(1)),
-    wpm: calculateWpm(totalTypedCharacters, elapsedSeconds),
+    wpm: calculateWpm(correctCharacters, elapsedSeconds),
     accuracy: calculateAccuracy(correctCharacters, totalTypedCharacters),
   }
 }

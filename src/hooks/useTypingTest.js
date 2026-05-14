@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { predefinedPassages } from '../data/passages'
+import { playErrorSound } from '../utils/sound'
 import { compareText } from '../utils/textComparison'
 
 const DEFAULT_TIME_LIMIT = 60
@@ -48,6 +49,7 @@ export function useTypingTest() {
 
   const startTimestampRef = useRef(null)
   const endTimestampRef = useRef(null)
+  const pausedMsRemainingRef = useRef(null)
   const passages = [...predefinedPassages, ...savedPassages]
 
   const selectedPassage =
@@ -62,10 +64,37 @@ export function useTypingTest() {
   function resetTest(nextTimeLimit = timeLimit) {
     startTimestampRef.current = null
     endTimestampRef.current = null
+    pausedMsRemainingRef.current = null
     setTypedText('')
     setStatus('idle')
     setElapsedSeconds(0)
     setTimeLeft(nextTimeLimit)
+  }
+
+  function pauseTest() {
+    if (status !== 'running') return
+    pausedMsRemainingRef.current = (endTimestampRef.current ?? 0) - Date.now()
+    setStatus('paused')
+  }
+
+  function resumeTest() {
+    if (status !== 'paused') return
+    const remainingMs = pausedMsRemainingRef.current ?? 0
+    const now = Date.now()
+    startTimestampRef.current = now - (timeLimit * 1000 - remainingMs)
+    endTimestampRef.current = now + remainingMs
+    pausedMsRemainingRef.current = null
+    setStatus('running')
+  }
+
+  function submitTest() {
+    if (status !== 'running' && status !== 'paused') return
+    const elapsed = startTimestampRef.current
+      ? Math.min(timeLimit, Math.max(0, Math.round((Date.now() - startTimestampRef.current) / 1000)))
+      : 0
+    setElapsedSeconds(elapsed)
+    setTimeLeft(0)
+    setStatus('finished')
   }
 
   function handlePassageModeChange(nextMode) {
@@ -131,7 +160,7 @@ export function useTypingTest() {
   }
 
   function handleTypedTextChange(nextValue) {
-    if (!canStart || status === 'finished') {
+    if (!canStart || status === 'finished' || status === 'paused') {
       return
     }
 
@@ -140,6 +169,22 @@ export function useTypingTest() {
     }
 
     setTypedText(nextValue)
+
+    const lastIndex = nextValue.length - 1
+    if (lastIndex >= 0) {
+      if (lastIndex >= activePassage.length || nextValue[lastIndex] !== activePassage[lastIndex]) {
+        playErrorSound()
+      }
+    }
+
+    if (activePassage.length > 0 && nextValue.length >= activePassage.length) {
+      const elapsed = startTimestampRef.current
+        ? Math.min(timeLimit, Math.max(0, Math.round((Date.now() - startTimestampRef.current) / 1000)))
+        : 0
+      setElapsedSeconds(elapsed)
+      setTimeLeft(0)
+      setStatus('finished')
+    }
   }
 
   useEffect(() => {
@@ -204,5 +249,8 @@ export function useTypingTest() {
     setTypedText: handleTypedTextChange,
     saveCustomPassage,
     restartTest: () => resetTest(),
+    pauseTest,
+    resumeTest,
+    submitTest,
   }
 }

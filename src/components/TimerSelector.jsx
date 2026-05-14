@@ -101,8 +101,8 @@ export const TimerSelector = memo(function TimerSelector({
             disabled={disabled || !customSeconds.trim()}
             className="self-end rounded-2xl px-4 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50"
             style={{
-              background: 'var(--page-heading)',
-              color: '#ffffff',
+              background: 'var(--button-bg)',
+              color: 'var(--button-text)',
             }}
           >
             Apply Custom

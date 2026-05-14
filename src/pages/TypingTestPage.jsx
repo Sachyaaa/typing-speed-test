@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { PassageDisplay } from '../components/PassageDisplay'
 import { PassageSelector } from '../components/PassageSelector'
 import { ProgressBar } from '../components/ProgressBar'
@@ -13,6 +13,8 @@ import { useTypingTest } from '../hooks/useTypingTest'
 
 export function TypingTestPage() {
   const textareaRef = useRef(null)
+  const metricsSentinelRef = useRef(null)
+  const [metricsStuck, setMetricsStuck] = useState(false)
   const { theme, toggleTheme } = useTheme()
   const {
     mode,
@@ -33,6 +35,9 @@ export function TypingTestPage() {
     setTypedText,
     saveCustomPassage,
     restartTest,
+    pauseTest,
+    resumeTest,
+    submitTest,
   } = useTypingTest()
 
   useEffect(() => {
@@ -51,6 +56,17 @@ export function TypingTestPage() {
 
     return () => window.removeEventListener('keydown', handleKeyboardShortcuts)
   }, [restartTest])
+
+  useEffect(() => {
+    const sentinel = metricsSentinelRef.current
+    if (!sentinel) return
+    const observer = new IntersectionObserver(
+      ([entry]) => setMetricsStuck(!entry.isIntersecting),
+      { threshold: 0 }
+    )
+    observer.observe(sentinel)
+    return () => observer.disconnect()
+  }, [])
 
   function handlePasteAttempt(event) {
     event.preventDefault()
@@ -100,7 +116,7 @@ export function TypingTestPage() {
             <PassageSelector
               mode={mode}
               customPassage={customPassage}
-              disabled={status === 'running'}
+              disabled={status === 'running' || status === 'paused'}
               passages={passages}
               selectedPassageId={selectedPassageId}
               onModeChange={setMode}
@@ -113,7 +129,7 @@ export function TypingTestPage() {
               title="How It Works"
               description="Set a passage first, then start typing in the large workspace below."
             >
-              <ul className="grid gap-3 text-sm text-slate-600 dark:text-slate-300">
+              <ul className="grid gap-3 text-sm dark:text-slate-300" style={{ color: '#1e293b' }}>
                 <li>Typing begins the timer automatically on the first key press.</li>
                 <li>Paste is disabled inside the test textarea.</li>
                 <li>Wrong characters turn red, correct characters turn green.</li>
@@ -125,12 +141,13 @@ export function TypingTestPage() {
           <div className="mx-auto w-full max-w-3xl">
             <TimerSelector
               selectedTimeLimit={timeLimit}
-              disabled={status === 'running'}
+              disabled={status === 'running' || status === 'paused'}
               onTimeLimitChange={setTimeLimit}
             />
           </div>
 
-          <div className="metrics-sticky">
+          <div ref={metricsSentinelRef} className="h-px" />
+          <div className={`metrics-sticky${metricsStuck ? ' is-stuck' : ''}`}>
             <SectionCard className="metrics-shell">
               <StatsGrid
                 wpm={comparison.wpm}
@@ -147,6 +164,7 @@ export function TypingTestPage() {
             </SectionCard>
           </div>
 
+
           {hasPassage ? (
             <>
               <section className="workspace-layout">
@@ -160,7 +178,7 @@ export function TypingTestPage() {
               <TypingArea
                 className="workspace-card h-full min-h-0 lg:h-[calc(100vh-16rem)] lg:min-h-[44rem] lg:flex lg:flex-col"
                 value={typedText}
-                disabled={!canStart || status === 'finished'}
+                disabled={!canStart || status === 'finished' || status === 'paused'}
                 canStart={canStart}
                 status={status}
                 textareaRef={textareaRef}
@@ -190,6 +208,41 @@ export function TypingTestPage() {
       </div>
 
       <p className="footer-credit">Created by Sachin with help of Codex</p>
+
+      {hasPassage && (
+        <div className="action-sidebar">
+          {status === 'idle' && canStart && (
+            <button type="button" onClick={() => textareaRef.current?.focus()} className="action-btn action-btn--cyan">
+              <span className="action-btn-icon">▶</span>
+              <span className="action-btn-label">Start</span>
+            </button>
+          )}
+          {status === 'running' && (
+            <button type="button" onClick={pauseTest} className="action-btn action-btn--amber">
+              <span className="action-btn-icon">⏸</span>
+              <span className="action-btn-label">Pause</span>
+            </button>
+          )}
+          {status === 'paused' && (
+            <button type="button" onClick={resumeTest} className="action-btn action-btn--green">
+              <span className="action-btn-icon">▶</span>
+              <span className="action-btn-label">Resume</span>
+            </button>
+          )}
+          {(status === 'running' || status === 'paused') && (
+            <button type="button" onClick={submitTest} className="action-btn action-btn--cyan">
+              <span className="action-btn-icon">✓</span>
+              <span className="action-btn-label">Submit</span>
+            </button>
+          )}
+          {(status === 'running' || status === 'paused') && (
+            <button type="button" onClick={() => { restartTest(); textareaRef.current?.focus() }} className="action-btn action-btn--slate">
+              <span className="action-btn-icon">↺</span>
+              <span className="action-btn-label">Restart</span>
+            </button>
+          )}
+        </div>
+      )}
     </main>
   )
 }
