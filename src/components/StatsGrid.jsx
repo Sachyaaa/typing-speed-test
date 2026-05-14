@@ -1,5 +1,4 @@
 import { memo } from 'react'
-import { formatTime } from '../utils/time'
 import { StatCard } from './StatCard'
 
 export const StatsGrid = memo(function StatsGrid({
@@ -7,20 +6,19 @@ export const StatsGrid = memo(function StatsGrid({
   accuracy,
   totalTypedCharacters,
   errorsCount,
-  timeLeft,
-  timeLimit,
   completionPercentage,
+  streak,
+  bestStreak,
 }) {
-  const isLowTime = timeLeft > 0 && timeLeft <= Math.max(1, Math.ceil(timeLimit * 0.15))
-
   return (
-    <div className="grid gap-1.5 sm:grid-cols-3 lg:grid-cols-6">
+    <div className="grid gap-1.5 sm:grid-cols-4 lg:grid-cols-7">
       <StatCard label="WPM" value={wpm} tone="accent" />
       <StatCard label="Accuracy" value={`${accuracy}%`} tone="success" />
       <StatCard label="Characters" value={totalTypedCharacters} />
       <StatCard label="Errors" value={errorsCount} tone="danger" />
-      <StatCard label="Time Left" value={formatTime(timeLeft)} tone={isLowTime ? 'warning' : 'default'} emphasized={isLowTime} />
       <StatCard label="Completion" value={`${completionPercentage}%`} />
+      <StatCard label="Streak" value={streak} tone="accent" />
+      <StatCard label="Best Streak" value={bestStreak} tone="success" />
     </div>
   )
 })

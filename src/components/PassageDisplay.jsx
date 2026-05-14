@@ -6,6 +6,7 @@ export const PassageDisplay = memo(function PassageDisplay({
   extraCharacters,
   title,
   className = '',
+  fontSize,
 }) {
   return (
     <SectionCard
@@ -13,7 +14,10 @@ export const PassageDisplay = memo(function PassageDisplay({
       title="Reference Passage"
       description={title ? `Currently loaded: ${title}` : 'Your custom practice passage'}
     >
-      <div className="workspace-panel typing-copy flex-1 overflow-y-auto rounded-3xl border border-slate-300 bg-slate-100 p-5 text-left dark:border-white/10 dark:bg-white/5">
+      <div
+        className="workspace-panel typing-copy flex-1 overflow-y-auto rounded-3xl border border-slate-300 bg-slate-100 p-5 text-left dark:border-white/10 dark:bg-white/5"
+        style={fontSize ? { fontSize: `${fontSize}px` } : undefined}
+      >
         {characters.length > 0 ? (
           <>
             {characters.map((character) => {

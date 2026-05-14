@@ -1,4 +1,5 @@
-import { memo } from 'react'
+import { memo, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { playErrorSound } from '../utils/sound'
 import { SectionCard } from './SectionCard'
 
@@ -11,7 +12,10 @@ export const TypingArea = memo(function TypingArea({
   onChange,
   onPasteAttempt,
   className = '',
+  fontSize,
 }) {
+  const [capsLockOn, setCapsLockOn] = useState(false)
+
   const placeholder = canStart
     ? 'Start typing here. Paste is disabled so the test stays fair.'
     : 'Choose a predefined passage or add your own custom text first.'
@@ -27,6 +31,13 @@ export const TypingArea = memo(function TypingArea({
       }
     >
       <div className="flex h-full flex-1 flex-col gap-3">
+        {capsLockOn && createPortal(
+          <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 flex items-center gap-2 rounded-2xl border border-amber-300 bg-amber-50 px-4 py-2.5 text-sm font-semibold text-amber-800 shadow-lg dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-300">
+            <span>⇪</span>
+            <span>Caps Lock is on — this will affect your typing accuracy.</span>
+          </div>,
+          document.body
+        )}
         <textarea
           ref={textareaRef}
           value={value}
@@ -37,15 +48,20 @@ export const TypingArea = memo(function TypingArea({
             onPasteAttempt(event)
           }}
           onKeyDown={(event) => {
+            setCapsLockOn(event.getModifierState('CapsLock'))
             if (status === 'running' && (event.key === 'Backspace' || event.key === 'Delete')) {
               event.preventDefault()
               playErrorSound()
             }
           }}
+          onKeyUp={(event) => {
+            setCapsLockOn(event.getModifierState('CapsLock'))
+          }}
           disabled={disabled}
           rows={8}
           spellCheck={false}
           placeholder={placeholder}
+          style={fontSize ? { fontSize: `${fontSize}px` } : undefined}
           className={`workspace-panel typing-textarea typing-copy min-h-[32rem] flex-1 resize-none overflow-y-auto rounded-3xl border px-5 py-4 caret-black outline-none transition placeholder:text-slate-400 dark:caret-white dark:placeholder:text-slate-500 ${
             status === 'running'
               ? 'border-cyan-400 shadow-[0_0_0_4px_rgba(34,211,238,0.12)]'

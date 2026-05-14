@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { predefinedPassages } from '../data/passages'
-import { playErrorSound } from '../utils/sound'
+import { playErrorSound, playSuccessSound } from '../utils/sound'
 import { compareText } from '../utils/textComparison'
 
 const DEFAULT_TIME_LIMIT = 60
@@ -46,6 +46,9 @@ export function useTypingTest() {
   const [status, setStatus] = useState('idle')
   const [timeLeft, setTimeLeft] = useState(DEFAULT_TIME_LIMIT)
   const [elapsedSeconds, setElapsedSeconds] = useState(0)
+  const [streak, setStreak] = useState(0)
+  const [bestStreak, setBestStreak] = useState(0)
+  const [keyErrors, setKeyErrors] = useState({})
 
   const startTimestampRef = useRef(null)
   const endTimestampRef = useRef(null)
@@ -69,6 +72,8 @@ export function useTypingTest() {
     setStatus('idle')
     setElapsedSeconds(0)
     setTimeLeft(nextTimeLimit)
+    setStreak(0)
+    setKeyErrors({})
   }
 
   function pauseTest() {
@@ -174,6 +179,18 @@ export function useTypingTest() {
     if (lastIndex >= 0) {
       if (lastIndex >= activePassage.length || nextValue[lastIndex] !== activePassage[lastIndex]) {
         playErrorSound()
+        setStreak(0)
+        const expectedChar = lastIndex < activePassage.length ? activePassage[lastIndex].toLowerCase() : null
+        if (expectedChar) {
+          setKeyErrors((prev) => ({ ...prev, [expectedChar]: (prev[expectedChar] || 0) + 1 }))
+        }
+      } else {
+        playSuccessSound()
+        setStreak((prev) => {
+          const next = prev + 1
+          setBestStreak((best) => Math.max(best, next))
+          return next
+        })
       }
     }
 
@@ -242,6 +259,9 @@ export function useTypingTest() {
     canStart,
     comparison,
     passages,
+    streak,
+    bestStreak,
+    keyErrors,
     setMode: handlePassageModeChange,
     setSelectedPassageId: handleSelectPassage,
     setCustomPassage: handleCustomPassageChange,

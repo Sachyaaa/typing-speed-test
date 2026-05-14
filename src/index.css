@@ -117,7 +117,7 @@ input {
   position: sticky;
   top: 0.75rem;
   z-index: 30;
-  border-radius: var(--section-radius);
+  border-radius: 0.75rem;
   transition: background 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
 }
 
@@ -126,7 +126,7 @@ input {
   backdrop-filter: blur(18px);
   border: 1px solid var(--panel-border);
   box-shadow: 0 4px 24px rgba(15, 23, 42, 0.12);
-  padding: 0.6rem 0.75rem;
+  padding: 0.5rem 0.4rem;
 }
 
 .section-card.metrics-shell {
@@ -142,6 +142,57 @@ input {
   margin-top: 0.2rem;
   margin-inline: -0.2rem;
   margin-bottom: 0;
+}
+
+
+.metrics-sticky.is-stuck.is-collapsed {
+  background: transparent;
+  backdrop-filter: none;
+  border-color: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+.action-timer {
+  min-width: 2.6rem;
+  text-align: center;
+  padding: 0.45rem 0.5rem;
+  border-radius: 0.75rem;
+  background: rgba(34, 211, 238, 0.15);
+  border: 1.5px solid rgba(34, 211, 238, 0.55);
+  box-shadow: 0 0 10px rgba(34, 211, 238, 0.18);
+}
+
+.action-timer-value {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  color: #0891b2;
+  line-height: 1;
+}
+
+.dark .action-timer-value,
+:root[data-theme='dark'] .action-timer-value {
+  color: #22d3ee;
+  text-shadow: 0 0 12px rgba(34, 211, 238, 0.5);
+}
+
+.action-timer--warning {
+  background: rgba(239, 68, 68, 0.18);
+  border-color: rgba(239, 68, 68, 0.6);
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.25);
+  animation: time-alert-blink 0.9s ease-in-out infinite;
+}
+
+.action-timer--warning .action-timer-value {
+  color: #dc2626;
+}
+
+.dark .action-timer--warning .action-timer-value,
+:root[data-theme='dark'] .action-timer--warning .action-timer-value {
+  color: #f87171;
+  text-shadow: 0 0 12px rgba(248, 113, 113, 0.5);
 }
 
 .hero-panel,
@@ -190,6 +241,20 @@ input {
 
 .workspace-card {
   overflow: hidden;
+}
+
+.focus-collapsible {
+  overflow: hidden;
+  transition: max-height 450ms ease, opacity 350ms ease, margin-bottom 400ms ease;
+  max-height: 1200px;
+  opacity: 1;
+}
+
+.focus-collapsible.is-hidden {
+  max-height: 0;
+  opacity: 0;
+  margin-bottom: 0 !important;
+  pointer-events: none;
 }
 
 .primary-button {
@@ -300,6 +365,13 @@ input {
   gap: 0.4rem;
   padding: 0 1rem;
   box-shadow: 0 4px 16px rgba(15, 23, 42, 0.22);
+}
+
+.action-sidebar-divider {
+  width: 2.6rem;
+  height: 1px;
+  background: var(--panel-border);
+  margin: 0.2rem 0;
 }
 
 .action-btn-icon {
