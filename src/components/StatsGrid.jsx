@@ -11,7 +11,7 @@ export const StatsGrid = memo(function StatsGrid({
   timeLimit,
   completionPercentage,
 }) {
-  const isLowTime = timeLeft > 0 && timeLeft <= Math.max(1, Math.ceil(timeLimit * 0.1))
+  const isLowTime = timeLeft > 0 && timeLeft <= Math.max(1, Math.ceil(timeLimit * 0.15))
 
   return (
     <div className="grid gap-1.5 sm:grid-cols-3 lg:grid-cols-6">

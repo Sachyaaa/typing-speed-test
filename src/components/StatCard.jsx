@@ -40,12 +40,12 @@ export const StatCard = memo(function StatCard({
       valueColorDark: '#ecfeff',
     },
     warning: {
-      borderColor: 'rgba(245, 158, 11, 0.55)',
-      background: 'rgba(245, 158, 11, 0.18)',
-      labelColorLight: '#b45309',
-      valueColorLight: '#78350f',
-      labelColorDark: '#fde68a',
-      valueColorDark: '#fffbeb',
+      borderColor: 'rgba(239, 68, 68, 0.6)',
+      background: 'rgba(239, 68, 68, 0.16)',
+      labelColorLight: '#b91c1c',
+      valueColorLight: '#7f1d1d',
+      labelColorDark: '#fecaca',
+      valueColorDark: '#fff1f2',
     },
   }
 
